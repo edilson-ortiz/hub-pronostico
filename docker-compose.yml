@@ -1,0 +1,14 @@
+services:
+  api:
+    build: .
+    container_name: ventusky-api
+    ports:
+      - "3001:3001"
+    restart: unless-stopped
+    environment:
+      - PYTHONUNBUFFERED=1
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:3001/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
