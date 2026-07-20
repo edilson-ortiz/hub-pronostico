@@ -5,7 +5,7 @@ import re
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 from collections import Counter
-
+from zoneinfo import ZoneInfo
 
 class VentuskyService:
     HORARIOS = ["02:00", "05:00", "08:00", "11:00", "14:00", "17:00", "20:00", "23:00"]
@@ -262,9 +262,12 @@ class VentuskyService:
         self.astro_dates = parsed["astro_dates"]
         self.next_24h = self.extract_next_24h(soup)
 
+        # Hora actual de Bolivia
+        ahora_bo = datetime.now(ZoneInfo("America/La_Paz"))
+
         # Cache: horas restantes de "hoy" y fecha de hoy, calculado una sola vez
         self.hoy_horas = [h for h in self.next_24h if h.get("dia_relativo") == "hoy"]
-        self.fecha_hoy = datetime.now().strftime("%d/%m/%Y")
+        self.fecha_hoy = ahora_bo.strftime("%d/%m/%Y")
 
         # --- FIX: orden numérico real de las keys (d_0, d_1, ..., d_10, d_11) ---
         # sorted() por defecto ordena como string y desalinea d_10/d_11 antes que d_2, d_3...
