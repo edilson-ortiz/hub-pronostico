@@ -340,19 +340,25 @@ class VentuskyService:
     def get_forecast_daily(self) -> List[Dict[str, Any]]:
         daily_summary = []
 
-        # "Hoy" reconstruido con lo que resta del día (tabla próximas 24h)
+        # Hoy
         if self.hoy_horas:
             resumen_hoy = self._aggregate_bloque(self.hoy_horas)
-            resumen_hoy["fecha"] = self.fecha_hoy
-            daily_summary.append(resumen_hoy)
+            daily_summary.append({
+                "fecha": self.fecha_hoy,
+                **resumen_hoy
+            })
 
+        # Días siguientes
         for dia in (self.organized_days or []):
             horas = dia["horarios"]
             if not horas:
                 continue
+
             resumen = self._aggregate_bloque_json(horas)
-            resumen["fecha"] = dia["fecha"]
-            daily_summary.append(resumen)
+            daily_summary.append({
+                "fecha": dia["fecha"],
+                **resumen
+            })
 
         return daily_summary
 
