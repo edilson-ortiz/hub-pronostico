@@ -62,3 +62,18 @@ async def forecast_next_24h(
         "location": svc.note,
         "data": svc.get_forecast_next_24h()
     }
+
+@router.get("/daytramo")
+async def forecast_tramos(
+    lat: float = Query(..., description="Latitud", example=-17.783),
+    lon: float = Query(..., description="Longitud", example=-63.182),
+):
+    """
+    Pronostico divido en dias y luego en tramos: madrugada, mañana, tarde, noche."""
+    svc = await _build_service(lat, lon)
+    return {
+        "location": svc.note,
+        "daily": svc.get_forecast_daily(),
+        "tramo": svc.get_forecast_by_tramos()
+        
+    }
